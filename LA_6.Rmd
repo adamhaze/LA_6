@@ -16,3 +16,27 @@ COflights <- read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/os
 
 ```
 
+###Erin's Findings
+
+#Probability of delayed flights to Denver with air time greater than 4 hours
+```{r}
+prob_delayDEN <- COflights %>%
+  filter(ARR_DELAY > 0 & AIR_TIME > 240, DEST == 'DEN') %>%
+  count()
+total_delayDEN <- COflights %>%
+  filter(ARR_DELAY > 0, DEST == 'DEN') %>%
+  count()
+
+prob_delayDEN/total_delayDEN
+```
+#Probability of delayed flights to Denver with air time less than 2 hours
+```{r}
+prob_delayDEN2 <- COflights %>%
+  filter(ARR_DELAY > 5 & AIR_TIME < 120, DEST == 'DEN') %>%
+  count()
+total_delayDEN <- COflights %>%
+  filter(ARR_DELAY > 0, DEST == 'DEN') %>%
+  count()
+prob_delayDEN2/total_delayDEN
+```
+#From the probabilities displayed above, as the air time increases, the probability of an arrival delay decreases. As the air time decreases, then the probability of an arrival delay increases. It is roughly around 4 percent probabilty of a delayed arrival for a flight longer than 4 hours. But, for flights less than 2 hour, there is a 40 percent probability of a delayed arrival. 
