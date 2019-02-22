@@ -93,6 +93,7 @@ prob_delayDEN2/total_delayDEN
 
 ###Jasmine's Findings
 
+
 #Probability of delayed arrivals to Denver with a flight distance greater than 1000 miles
 ```{r}
 delayed_arrival <- COflights%>%
@@ -103,18 +104,42 @@ DEN_total_delay <- COflights%>%
   filter(DEST == "DEN", ARR_DELAY)%>%
   count()
 
-delayed_arrival/DEN_total_delay
+DENVER <- delayed_arrival/DEN_total_delay
 ```
 
-#Probability of delayed arrivals to Denver with a flight distance less than 600 miles
+```{r echo=FALSE, results = 'asis'}
+library(knitr)
+kable(DENVER, caption = "Delayed Arrivals with Distance > 1000")
+```
+
+```{r}
+library(tidyverse)
+ggplot(data = COflights)+
+    geom_point(mapping = aes(x= ARR_DELAY, y = DISTANCE > 1000, color = DISTANCE), position = "jitter", na.rm = TRUE)
+```
+
+
+#Probability of delayed arrivals to Denver with a flight distance less than 500 miles
 ```{r}
 delayed_arrival_2 <- COflights%>%
   filter(DEST == "DEN", DISTANCE < 500 & ARR_DELAY >0)%>%
   count()
 
-delayed_arrival_2/DEN_total_delay
+DENVER_2 <- delayed_arrival_2/DEN_total_delay
+
 ```
-#As displayed by the probabilities above, there is a higher chance in the flights to Denver having a delayed arrival as the distance between states increases. This contradicts the earlier plot that had been discussed for all colorado flights with the weather delays showing opposing trends. Also, as the distance between states decrease by half the distance, there is a 5.72% difference in flights having delayed arrivals into Denver, which is almost a 3x increase. 
+
+```{r echo=FALSE, results = 'asis'}
+library(knitr)
+kable(DENVER_2, caption = "Delayed Arrivals with Dsitance < 500")
+```
+
+```{r}
+ggplot(data = COflights)+
+    geom_point(mapping = aes(x= ARR_DELAY, y = DISTANCE < 500, color = DISTANCE), position = "jitter", na.rm = TRUE)
+```
+#As displayed by the probabilities above, there is a higher chance in the flights to Denver having a delayed arrival as the distance between states increases. This contradicts the earlier plot that had been discussed for all colorado flights with the weather delays showing opposing trends. 
+#Also, as the distance between states decrease by half the distance, there is a 5.72% difference in flights having delayed arrivals into Denver, which is almost a 3x increase. 
 
 ###Richard's Findings
 
