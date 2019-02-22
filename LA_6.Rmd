@@ -16,6 +16,14 @@ COflights <- read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/os
 
 ```
 
+###The shorter the flight distance the increase in arrival delay
+```{r}
+
+ggplot(data = COflights) + geom_point(mapping = aes(x = DISTANCE, y = ARR_DELAY), color = 'blue', position = 'dodge', na.rm = TRUE) + coord_flip()
+
+```
+#When the distance of a flight decreases, the chances of an arrival delay are higher. The longer the flight distance, the less chance of an arrival delay. This means that a short flight distance increases the arrival delay.
+
 ###Erin's Findings
 
 #Probability of delayed flights to Denver with air time greater than 4 hours
