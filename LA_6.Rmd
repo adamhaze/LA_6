@@ -32,7 +32,8 @@ DEN_flights <- COflights%>%
 ggplot(data = DEN_flights)+
   geom_point(aes(x = CRS_ARR_TIME,y = WEATHER_DELAY, colour = DISTANCE), position = "jitter",na.rm =TRUE)
 ```
-##There is a strong trend between the scheduled arrival time of a flight landing in colorado and the number of flights that have also been delayed due to weather. As the scheduled arrival time increases (gets later), there is a higher chance of theflight being delayed due to weather. Also, as the distance of the flight decreases, there is another trend in higher opportunities for there being a delay in the flight due to weather. 
+##There is a strong trend between the scheduled arrival time of a flight landing in colorado and the number of flights that have also been delayed due to weather. As the scheduled arrival time increases (gets later), there is a higher chance of theflight being delayed due to weather. Therefore, having an earlier schuled flight time will contribute and more accurately lead to an on-time arrival.
+##Also, as the distance of the flight decreases, there is another trend in higher opportunities for there being a delay in the flight due to weather. With that, it may also be more beneficial for flyers at a greater distance from Denver to decrease their chances of having a delayed flight due to weather. 
 
 ###Erin's Findings
 
