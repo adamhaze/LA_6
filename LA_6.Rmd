@@ -27,7 +27,7 @@ ggplot(data = COflights) + geom_point(mapping = aes(x = DISTANCE, y = ARR_DELAY)
 
 ```
 
-####comments
+####Comments
 When the distance of a flight decreases, the chances of an arrival delay are higher. The longer the flight distance, the less chance of an arrival delay. This means that a short flight distance increases the arrival delay.
 
 ###Having a weather delay in correlation with the flight's scheduled arrival time
@@ -39,7 +39,7 @@ ggplot(data = DEN_flights)+
   geom_point(aes(x = CRS_ARR_TIME,y = WEATHER_DELAY, colour = DISTANCE), position = "jitter",na.rm =TRUE)
 ```
 
-####comments
+####Comments
 There is a strong trend between the scheduled arrival time of a flight landing in colorado and the number of flights that have also been delayed due to weather. As the scheduled arrival time increases (gets later), there is a higher chance of theflight being delayed due to weather. Therefore, having an earlier schuled flight time will contribute and more accurately lead to an on-time arrival.
 Also, as the distance of the flight decreases, there is another trend in higher opportunities for there being a delay in the flight due to weather. With that, it may also be more beneficial for flyers at a greater distance from Denver to decrease their chances of having a delayed flight due to weather. 
 
@@ -48,16 +48,19 @@ Also, as the distance of the flight decreases, there is another trend in higher 
 Carrier_delays_total <- COflights%>%
   filter(!is.na(CARRIER_DELAY), DEST == 'DEN', CARRIER == 'UA')%>%
   count()
-Carrier_delays_total
 
 Carrier_delays <- COflights%>%
   filter(!is.na(CARRIER_DELAY), DEST == 'DEN', CARRIER == 'UA', CARRIER_DELAY >=15)%>%
   count()
-Carrier_delays
-Carrier_delays / Carrier_delays_total
+
+```
+```{r echo = FALSE, results = 'asis'}
+library(knitr)
+kable(Carrier_delays / Carrier_delays_total, caption = "Prob of United Airlines causes more delays")
 ```
 
-####comments
+
+####Comments
 The probability above shows that carrier delays (specifically analyzing United Airlines) have approximately 29.8% of being delayed due to carrrier related issues. A flight is considered "delayed" if it arrives 15 or more minutes late and the probability of that happening for someone flying United, which is a major carrier, is 29.8%. 
 
 ###Does NAS (National Air System) cause more delays?
@@ -65,16 +68,18 @@ The probability above shows that carrier delays (specifically analyzing United A
 NAS_delay_total <- COflights%>%
   filter(!is.na(NAS_DELAY), DEST == 'DEN')%>%
   count()
-NAS_delay_total
 
 NAS_delay <-COflights%>%
   filter(!is.na(NAS_DELAY), DEST == 'DEN', NAS_DELAY >=15)%>%
   count()
-NAS_delay
-NAS_delay / NAS_delay_total
+
+```
+```{r echo = FALSE, results = 'asis'}
+library(knitr)
+kable(NAS_delay / NAS_delay_total, caption = "Prob of NAS causes more delays")
 ```
 
-####comments
+####Comments
 National Air System probability of being delayed is 30.9% which shows that all flights experience a 30.9% chance of there being a national air system delay. As previously explained, a flight is considered "delayed" if it arrives 15 or more minutes late. 
 
 
@@ -93,7 +98,7 @@ kable(dep_delay_aircraft / delayed_departures, caption = "Prob of aircraft arriv
 
 ```
 
-####comments
+####Comments
 This probability shows that planes with delayed departures have about a 48% chance of having a delayed arrival time from the incoming aircraft.  What this means is that often planes are departing late because the plane they were supposed be departing on was late to arrive 
 
 ###Does weather delay cause more delayed departures?
@@ -109,7 +114,7 @@ kable(dep_delay_weather / delayed_departures, caption = "Prob of weather delay l
 
 ```
 
-####comments
+####Comments
 What this shows is that any kind of weather delay has very little impact on departure delays.
 
 ###Do security delays casue more delayed departures?
@@ -124,7 +129,7 @@ kable(dep_delay_security / delayed_departures, caption = "Prob of security delay
 
 ```
 
-####comments
+####Comments
 What this shows is that security delays also have very little impact on influencing late departures.
 
 ###Our Recommendation
@@ -133,7 +138,13 @@ It is also evident from our findings that, sometimes shorter flights have more f
 
 
 ###Erin's Findings
+```{r}
+library(tidyverse)
+DEN_flights <- COflights%>%
+  filter(DEST == "DEN")
 
+ggplot(data = DEN_flights) + geom_point(mapping = aes(x = 'DEN', y = ARR_DELAY, color = AIR_TIME), position = 'jitter') + coord_flip()
+```
 
 ####Probability of delayed flights to Denver with air time greater than 4 hours
 
@@ -144,8 +155,11 @@ prob_delayDEN <- COflights %>%
 total_delayDEN <- COflights %>%
   filter(ARR_DELAY > 0, DEST == 'DEN') %>%
   count()
+```
+```{r echo = FALSE, results = 'asis'}
+library(knitr)
+kable(prob_delayDEN / total_delayDEN, caption = "Prob of air time longer than 4 hours")
 
-prob_delayDEN/total_delayDEN
 ```
 
 ####Probability of delayed flights to Denver with air time less than 2 hours
@@ -157,16 +171,24 @@ prob_delayDEN2 <- COflights %>%
 total_delayDEN <- COflights %>%
   filter(ARR_DELAY > 0, DEST == 'DEN') %>%
   count()
-prob_delayDEN2/total_delayDEN
 ```
+```{r echo = FALSE, results = 'asis'}
+library(knitr)
+kable(prob_delayDEN2 / total_delayDEN, caption = "Prob of air timr less than 2 hours")
 
-####comments
+```
+####Comments
 From the probabilities displayed above, as the air time increases, the probability of an arrival delay decreases. As the air time decreases, then the probability of an arrival delay increases. It is roughly around 4 percent probabilty of a delayed arrival for a flight longer than 4 hours. But, for flights less than 2 hour, there is a 40 percent probability of a delayed arrival. 
 
 
 ###Jasmine's Findings
 
 ####Probability of delayed arrivals to Denver with a flight distance greater than 1000 miles
+```{r}
+library(tidyverse)
+ggplot(data = COflights)+
+    geom_point(mapping = aes(x= ARR_DELAY, y = DISTANCE > 1000, color = DISTANCE), position = "jitter", na.rm = TRUE)
+```
 ```{r}
 delayed_arrival <- COflights%>%
   filter(DEST == "DEN", DISTANCE > 1000 & ARR_DELAY >0)%>%
@@ -176,12 +198,6 @@ DEN_total_delay <- COflights%>%
   filter(DEST == "DEN", ARR_DELAY)%>%
   count()
 DENVER <- delayed_arrival/DEN_total_delay
-delayed_arrival/DEN_total_delay
-```
-```{r}
-library(tidyverse)
-ggplot(data = COflights)+
-    geom_point(mapping = aes(x= ARR_DELAY, y = DISTANCE > 1000, color = DISTANCE), position = "jitter", na.rm = TRUE)
 ```
 ```{r echo=FALSE, results = 'asis'}
 library(knitr)
@@ -190,22 +206,21 @@ kable(DENVER, caption = "Delayed Arrivals with Distance > 1000")
 
 ####Probability of delayed arrivals to Denver with a flight distance less than 600 miles
 ```{r}
+ggplot(data = COflights)+
+    geom_point(mapping = aes(x= ARR_DELAY, y = DISTANCE < 500, color = DISTANCE), position = "jitter", na.rm = TRUE)
+```
+```{r}
 delayed_arrival_2 <- COflights%>%
   filter(DEST == "DEN", DISTANCE < 500 & ARR_DELAY >0)%>%
   count()
 DENVER_2 <- delayed_arrival_2/DEN_total_delay
-delayed_arrival_2/DEN_total_delay
 ```
 ```{r echo=FALSE, results = 'asis'}
 library(knitr)
 kable(DENVER_2, caption = "Delayed Arrivals with Dsitance < 500")
 ```
-```{r}
-ggplot(data = COflights)+
-    geom_point(mapping = aes(x= ARR_DELAY, y = DISTANCE < 500, color = DISTANCE), position = "jitter", na.rm = TRUE)
-```
 
-####comments
+####Comments
 As displayed by the probabilities above, there is a higher chance in the flights to Denver having a delayed arrival as the distance between states increases. This contradicts the earlier plot that had been discussed for all colorado flights with the weather delays showing opposing trends. Also, as the distance between states decrease by half the distance, there is a 5.72% difference in flights having delayed arrivals into Denver, which is almost a 3x increase. 
 
 
@@ -216,29 +231,14 @@ As displayed by the probabilities above, there is a higher chance in the flights
 delayed_departure_total <- COflights%>%
   filter(ORIGIN == 'DEN', AIR_TIME)%>% 
   count()
-delayed_departure_total
-
 delayed_departure_air_time <- COflights%>%
   filter(AIR_TIME >=60, ORIGIN == 'DEN', DEP_DELAY)%>%
   count()
-delayed_departure_air_time
-delayed_departure_air_time / delayed_departure_total
 
 ```
 
 
-#####Probability of delayed departure from Denver with an air time less than 60 minutes 
-```{r}
-delayed_departure_air_time2 <- COflights%>%
-  filter(AIR_TIME <60, ORIGIN == 'DEN', DEP_DELAY)%>%
-  count()
-delayed_departure_air_time2
-delayed_departure_air_time2 / delayed_departure_total
-```
-
-####comments
-The probabilities above indicate that there is a higher chance of a delayed departure if the flight air time is an hour or less, whereas, the probability of there being a delayed departure when the air time is more than an hour is significantly lower. For a flight with an air time of an hour or less, there is a 88.3% chance of it being delayed and for flights with an air time greater than an hour, there is a 6.3% chance of it being delayed. That's a 82% difference between the two!
-
+#####Probability of delayed departure from Denver with an air time less than 60 minutes
 ```{r}
 DEN_flights <- COflights%>%
   filter(DEST == "DEN")
@@ -248,6 +248,19 @@ ggplot(data = DEN_flights)+
   facet_wrap(~CARRIER)+
   labs(title = "Delayed Departure Flights vs Air Time", x = "Departure Delay in minutes", y = "Air Time in minutes" )
 ```
+```{r}
+delayed_departure_air_time2 <- COflights%>%
+  filter(AIR_TIME <60, ORIGIN == 'DEN', DEP_DELAY)%>%
+  count()
+```
+```{r echo = FALSE, results = 'asis'}
+library(knitr)
+kable(delayed_departure_air_time2 / delayed_departure_total, caption = "Prob of delayed depatyre with air time less than an hour")
+
+```
+
+####Comments
+The probabilities above indicate that there is a higher chance of a delayed departure if the flight air time is an hour or less, whereas, the probability of there being a delayed departure when the air time is more than an hour is significantly lower. For a flight with an air time of an hour or less, there is a 88.3% chance of it being delayed and for flights with an air time greater than an hour, there is a 6.3% chance of it being delayed. That's a 82% difference between the two!
 
 ###Adam's Findings
 
@@ -276,7 +289,7 @@ kable(delayed_departures_taxi / delayed_departures, caption = "Prob of long taxi
 
 ```
 
-####comments
+####Comments
 What we can see from this is that planes with a taxi out time of more than 10 minutes have a much higher chance (about 90%) of having a delayed departure time.  What this means is that planes that are taking a longer time from pulling out of the gate until they take off, are often leaving later than they should. The graph shows that the number of planes with delayed departure is much more heavily distributed from taxi out times of 10 and above, meaning that flights with these taxi out times are departing late much more frequently.
 
 ####Probability that morning departures lead to less delayed departures
@@ -295,6 +308,10 @@ kable(delayed_departures_time / delayed_departures, caption = "Prob of morning d
 
 ```
 
-####comments
+####Comments
 What we can see from this is that planes that are departing in the morning (before noon) have a much lower chance of having a delayed departure (only about 22%) compared to planes leaving in the afternoon/evening.  What this means is that planes leaving in the evening probably have more factors that are leading them to have delayed departure times more frequently. The graph shows that the distribution of planes with delayed departures is much more heavily distributed towards the right half of the graph, which represents planes taking off after 12pm.
+
+####Overall Contributions
+*Overall, our group worked efficiently together on this weeks lab. We were able to divide up the individual parts and team contributions equally to make for an efficient process. First, Adam and Richard created the table probabilites to determine the decrease and increase on arrival delays for weather, carrier, etc. They worked together to divide the work. In their plots, they used color in the aesthetics to allow viewers to visualize the different flight distances and the impact weather will have on them. As well, in their plots, they used the attribute "!is.na" in order to eliminate the values that aren't existing, such as a cancelled flight. For the increase on arrival delay, Jasmine and Erin worked together to display plots of how certain factors will increase the delay time. From the finding, they incorporated color to make it visually appealing, and then included 'position = 'dodge'' to allow the viewer to see the division of the data. Then, in the bar graph, the use of 'coord_flip()' was used to allow easier visualization of when the distance is increasing for the flight, the arrival delay decreases.  
+
 
