@@ -167,3 +167,13 @@ delayed_departure_air_time2
 delayed_departure_air_time2 / delayed_departure_total
 ```
 #The probabilities above indicate that there is a higher chance of a delayed departure if the flight air time is an hour or less, whereas, the probability of there being a delayed departure when the air time is more than an hour is significantly lower. For a flight with an air time of an hour or less, there is a 88.3% chance of it being delayed and for flights with an air time greater than an hour, there is a 6.3% chance of it being delayed. That's a 82% difference between the two!
+
+```{r}
+DEN_flights <- COflights%>%
+  filter(DEST == "DEN")
+  
+ggplot(data = DEN_flights)+
+  geom_point(aes(x = DEP_DELAY, y = AIR_TIME >=60, color = CARRIER), position = "jitter", na.rm = TRUE)+
+  facet_wrap(~CARRIER)+
+  labs(title = "Delayed Departure Flights vs Air Time", x = "Departure Delay in minutes", y = "Air Time in minutes" )
+```
