@@ -15,16 +15,22 @@ COflights <- read_csv("https://files.osf.io/v1/resources/3z5as4pej8/providers/os
 
 
 ```
+#What Factors Lead To On-Time Arrival in Denver?
 
-##The shorter the flight distance the increase in arrival delay
+###Importance
+
+
+###The shorter the flight distance the increase in arrival delay
 ```{r}
 
 ggplot(data = COflights) + geom_point(mapping = aes(x = DISTANCE, y = ARR_DELAY), color = 'blue', position = 'dodge', na.rm = TRUE) + coord_flip()
 
 ```
-##When the distance of a flight decreases, the chances of an arrival delay are higher. The longer the flight distance, the less chance of an arrival delay. This means that a short flight distance increases the arrival delay.
 
-##Having a weather delay in correlation with the flight's scheduled arrival time
+####comments
+When the distance of a flight decreases, the chances of an arrival delay are higher. The longer the flight distance, the less chance of an arrival delay. This means that a short flight distance increases the arrival delay.
+
+###Having a weather delay in correlation with the flight's scheduled arrival time
 ```{r}
 DEN_flights <- COflights%>%
   filter(DEST == "DEN")
@@ -32,12 +38,19 @@ DEN_flights <- COflights%>%
 ggplot(data = DEN_flights)+
   geom_point(aes(x = CRS_ARR_TIME,y = WEATHER_DELAY, colour = DISTANCE), position = "jitter",na.rm =TRUE)
 ```
-##There is a strong trend between the scheduled arrival time of a flight landing in colorado and the number of flights that have also been delayed due to weather. As the scheduled arrival time increases (gets later), there is a higher chance of theflight being delayed due to weather. Therefore, having an earlier schuled flight time will contribute and more accurately lead to an on-time arrival.
-##Also, as the distance of the flight decreases, there is another trend in higher opportunities for there being a delay in the flight due to weather. With that, it may also be more beneficial for flyers at a greater distance from Denver to decrease their chances of having a delayed flight due to weather. 
+
+####comments
+There is a strong trend between the scheduled arrival time of a flight landing in colorado and the number of flights that have also been delayed due to weather. As the scheduled arrival time increases (gets later), there is a higher chance of theflight being delayed due to weather. Therefore, having an earlier schuled flight time will contribute and more accurately lead to an on-time arrival.
+Also, as the distance of the flight decreases, there is another trend in higher opportunities for there being a delay in the flight due to weather. With that, it may also be more beneficial for flyers at a greater distance from Denver to decrease their chances of having a delayed flight due to weather. 
+
+###Our Recommendation
+
 
 ###Erin's Findings
 
-#Probability of delayed flights to Denver with air time greater than 4 hours
+
+####Probability of delayed flights to Denver with air time greater than 4 hours
+
 ```{r}
 prob_delayDEN <- COflights %>%
   filter(ARR_DELAY > 0 & AIR_TIME > 240, DEST == 'DEN') %>%
@@ -48,7 +61,9 @@ total_delayDEN <- COflights %>%
 
 prob_delayDEN/total_delayDEN
 ```
-#Probability of delayed flights to Denver with air time less than 2 hours
+
+####Probability of delayed flights to Denver with air time less than 2 hours
+
 ```{r}
 prob_delayDEN2 <- COflights %>%
   filter(ARR_DELAY > 5 & AIR_TIME < 120, DEST == 'DEN') %>%
@@ -58,12 +73,14 @@ total_delayDEN <- COflights %>%
   count()
 prob_delayDEN2/total_delayDEN
 ```
-#From the probabilities displayed above, as the air time increases, the probability of an arrival delay decreases. As the air time decreases, then the probability of an arrival delay increases. It is roughly around 4 percent probabilty of a delayed arrival for a flight longer than 4 hours. But, for flights less than 2 hour, there is a 40 percent probability of a delayed arrival. 
+
+####comments
+From the probabilities displayed above, as the air time increases, the probability of an arrival delay decreases. As the air time decreases, then the probability of an arrival delay increases. It is roughly around 4 percent probabilty of a delayed arrival for a flight longer than 4 hours. But, for flights less than 2 hour, there is a 40 percent probability of a delayed arrival. 
 
 
 ###Jasmine's Findings
 
-#Probability of delayed arrivals to Denver with a flight distance greater than 1000 miles
+####Probability of delayed arrivals to Denver with a flight distance greater than 1000 miles
 ```{r}
 delayed_arrival <- COflights%>%
   filter(DEST == "DEN", DISTANCE > 1000 & ARR_DELAY >0)%>%
@@ -76,7 +93,7 @@ DEN_total_delay <- COflights%>%
 delayed_arrival/DEN_total_delay
 ```
 
-#Probability of delayed arrivals to Denver with a flight distance less than 600 miles
+####Probability of delayed arrivals to Denver with a flight distance less than 600 miles
 ```{r}
 delayed_arrival_2 <- COflights%>%
   filter(DEST == "DEN", DISTANCE < 500 & ARR_DELAY >0)%>%
@@ -84,11 +101,51 @@ delayed_arrival_2 <- COflights%>%
 
 delayed_arrival_2/DEN_total_delay
 ```
-#As displayed by the probabilities above, there is a higher chance in the flights to Denver having a delayed arrival as the distance between states increases. This contradicts the earlier plot that had been discussed for all colorado flights with the weather delays showing opposing trends. Also, as the distance between states decrease by half the distance, there is a 5.72% difference in flights having delayed arrivals into Denver, which is almost a 3x increase. 
+
+####comments
+As displayed by the probabilities above, there is a higher chance in the flights to Denver having a delayed arrival as the distance between states increases. This contradicts the earlier plot that had been discussed for all colorado flights with the weather delays showing opposing trends. Also, as the distance between states decrease by half the distance, there is a 5.72% difference in flights having delayed arrivals into Denver, which is almost a 3x increase. 
+
+###Adam's Findings
+
+####Probability that taxi out time will increase the chance of a delayed departure
+
+```{r}
+delayed_departures <- COflights %>%
+  filter(ORIGIN == 'DEN', DEP_DELAY >= 15)%>%
+  count()
+
+delayed_departures_taxi <- COflights %>%
+  filter(ORIGIN == 'DEN', DEP_DELAY >= 15, TAXI_OUT >= 10)%>%
+  count()
+
+delayed_departures_taxi / delayed_departures
+
+delayed_departures_graph <- COflights %>%
+  filter(ORIGIN == 'DEN', DEP_DELAY >= 15)
+
+ggplot(data = delayed_departures_graph, mapping = aes(x = TAXI_OUT ))+
+  geom_histogram(xlim = c(0,100), binwidth = 5, color = "red")+
+  labs( title = "Taxi Out time distr. for Delayed Departures")
+```
+
+####Probability that morning departure time decreases chance of a delayed departure
+
+```{r}
+delayed_departures_time <- COflights %>%
+  filter(ORIGIN == 'DEN', DEP_DELAY >= 15, DEP_TIME <=1200)%>%
+  count()
+
+delayed_departures_time / delayed_departures
+
+ggplot(data = delayed_departures_graph, mapping = aes(x = DEP_TIME))+
+  geom_histogram(stat = "count")+
+  labs(title = "Depart Time distr. for Delayed Departures")
+```
+
 
 ###Richard's Findings
 
-#Probability of delayed departure from Denver with an air time greater or equal to 60 minutes
+####Probability of delayed departure from Denver with an air time greater or equal to 60 minutes
 ```{r}
 delayed_departure_total <- COflights%>%
   filter(ORIGIN == 'DEN', AIR_TIME)%>% 
@@ -103,7 +160,8 @@ delayed_departure_air_time / delayed_departure_total
 
 ```
 
-#Probability of delayed departure from Denver with an air time less than 60 minutes 
+
+#####Probability of delayed departure from Denver with an air time less than 60 minutes 
 ```{r}
 delayed_departure_air_time2 <- COflights%>%
   filter(AIR_TIME <60, ORIGIN == 'DEN', DEP_DELAY)%>%
@@ -111,4 +169,6 @@ delayed_departure_air_time2 <- COflights%>%
 delayed_departure_air_time2
 delayed_departure_air_time2 / delayed_departure_total
 ```
-#The probabilities above indicate that there is a higher chance of a delayed departure if the flight air time is an hour or less, whereas, the probability of there being a delayed departure when the air time is more than an hour is significantly lower. For a flight with an air time of an hour or less, there is a 88.3% chance of it being delayed and for flights with an air time greater than an hour, there is a 6.3% chance of it being delayed. That's a 82% difference between the two!
+
+####comments
+The probabilities above indicate that there is a higher chance of a delayed departure if the flight air time is an hour or less, whereas, the probability of there being a delayed departure when the air time is more than an hour is significantly lower. For a flight with an air time of an hour or less, there is a 88.3% chance of it being delayed and for flights with an air time greater than an hour, there is a 6.3% chance of it being delayed. That's a 82% difference between the two!
